@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, ConflictException, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, ConflictException, NotFoundException } from '@nestjs/common';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
@@ -30,5 +30,11 @@ export class PlacesController {
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updatePlaceDto: UpdatePlaceDto): Promise<Place> {
     return this.placesService.update(id, updatePlaceDto);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<{ message: string }> {
+    await this.placesService.delete(id);
+    return { message: 'Place deleted successfully' };
   }
 }

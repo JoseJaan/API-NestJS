@@ -54,11 +54,17 @@ export class PlacesService {
       place.goal = updatePlaceDto.goal;
     }
 
-    const now = new Date();
-    now.setHours(now.getHours() - 3);
-
-    place.updatedAt = now
+    place.updatedAt = new Date();
 
     return this.placeRepository.save(place);
+  }
+
+  async delete(id: number): Promise<void> {
+    const place = await this.findById(id);
+    if (!place) {
+      throw new NotFoundException('Place not found.');
+    }
+    
+    await this.placeRepository.remove(place);
   }
 }

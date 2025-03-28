@@ -17,9 +17,9 @@ export class Place {
   @Column()
   flagUrl: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP AT TIME ZONE \'GMT-3\'' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP AT TIME ZONE \'GMT-3\'', onUpdate: 'CURRENT_TIMESTAMP AT TIME ZONE \'GMT-3\'' })
   updatedAt: Date;
 }

@@ -4,6 +4,7 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/platform-express": "^11.0.12",
     "@nestjs/typeorm": "^11.0.0",
+    "class-validator": "^0.14.1",
     "mysql2": "^3.14.0"
   },
   "devDependencies": {

@@ -28,37 +28,52 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place, onEdit, onDelete }) => {
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
+          {place.flagUrl && (
+            <img 
+              src={place.flagUrl} 
+              alt={`Bandeira ${place.country}`}
+              style={{ 
+                width: '30px', 
+                height: 'auto',
+                marginRight: '10px',
+                border: '1px solid #eee',
+                borderRadius: '3px'
+              }}
+            />
+          )}
         </div>
         <div>
-          <button 
-            onClick={() => onEdit(place)} 
+          <button
+            onClick={() => onEdit(place)}
             style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '8px' }}
           >
             <EditIcon style={{ color: '#666' }} />
           </button>
-          <button 
-            onClick={() => onDelete(place.id)} 
+          <button
+            onClick={() => onDelete(place.id)}
             style={{ background: 'none', border: 'none', cursor: 'pointer' }}
           >
             <CloseIcon style={{ color: '#666' }} />
           </button>
         </div>
       </div>
-      
-      <div style={{ 
-        borderBottom: '1px solid #eee', 
-        paddingBottom: '10px', 
+     
+      <div style={{
+        borderBottom: '1px solid #eee',
+        paddingBottom: '10px',
         marginBottom: '10px',
         textTransform: 'uppercase',
         color: '#4CAF50',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        display: 'flex',
+        alignItems: 'center'
       }}>
         {place.country}
       </div>
-      
+     
       <div>
         <p style={{ margin: '5px 0' }}><strong>Local:</strong> {place.location}</p>
-        <p style={{ margin: '5px 0' }}><strong>Meta:</strong> {formatDate(place.createdAt)}</p>
+        <p style={{ margin: '5px 0' }}><strong>Meta:</strong> {place.goal || formatDate(place.createdAt)}</p>
       </div>
     </div>
   );

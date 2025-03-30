@@ -17,6 +17,17 @@ const PlacesPage: React.FC = () => {
     "ITÁLIA"
   ];
 
+  // Mapeamento de países para URLs de bandeiras
+  const flagUrls = {
+    "BRASIL": "https://flagcdn.com/br.svg",
+    "BOLÍVIA": "https://flagcdn.com/bo.svg",
+    "ESTADOS UNIDOS": "https://flagcdn.com/us.svg",
+    "EMIRADOS ÁRABES UNIDOS": "https://flagcdn.com/ae.svg",
+    "FRANÇA": "https://flagcdn.com/fr.svg",
+    "MÉXICO": "https://flagcdn.com/mx.svg",
+    "ITÁLIA": "https://flagcdn.com/it.svg"
+  };
+
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -69,7 +80,8 @@ const PlacesPage: React.FC = () => {
       const newPlace: CreatePlaceDto = {
         country: selectedCountry,
         location: location,
-        goal: goal
+        goal: goal,
+        flagUrl: flagUrls[selectedCountry as keyof typeof flagUrls] || ''
       };
       
       const createdPlace = await PlacesService.create(newPlace);

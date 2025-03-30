@@ -23,10 +23,10 @@ const PlaceForm: React.FC<PlaceFormProps> = ({
     "MÉXICO": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Mexico.svg/800px-Flag_of_Mexico.svg.png",
     "ITÁLIA": "https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg"
   };
-
+  
   // Lista de países
   const countries = Object.keys(countriesWithFlags);
-
+  
   const [formData, setFormData] = useState<CreatePlaceDto | UpdatePlaceDto>(
     place ? {
       country: place.country,
@@ -40,7 +40,7 @@ const PlaceForm: React.FC<PlaceFormProps> = ({
       flagUrl: ''
     }
   );
-
+  
   // Atualiza a URL da bandeira quando o país é selecionado ou alterado
   useEffect(() => {
     if (formData.country && countriesWithFlags[formData.country]) {
@@ -50,21 +50,75 @@ const PlaceForm: React.FC<PlaceFormProps> = ({
       }));
     }
   }, [formData.country]);
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    if (name === 'goal') {
+      const processed = value.replace(/[^\d/]/g, '');
+      
+      if (processed.length <= 7) {
+        if (processed.length === 2 && !processed.includes('/') && value.length > (formData.goal?.length || 0)) {
+          setFormData(prev => ({ ...prev, goal: `${processed}/` }));
+        } 
+        else if ((processed.match(/\//g) || []).length <= 1) {
+          const parts = processed.split('/');
+          
+          if (parts.length === 1 && parts[0].length <= 2) {
+            setFormData(prev => ({ ...prev, goal: processed }));
+          } else if (parts.length === 2) {
+            const [month, year] = parts;
+            
+            if (month.length <= 2 && (month === '' || (parseInt(month) >= 1 && parseInt(month) <= 12) || month.length < 2)) {
+              if (year.length <= 4) {
+                setFormData(prev => ({ ...prev, goal: processed }));
+              }
+            }
+          }
+        }
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
-
+  
   const handleSubmit = () => {
+    if (formData.goal) {
+      const parts = formData.goal.split('/');
+      if (parts.length === 2) {
+        const [month, year] = parts;
+        if (month.length === 1) {
+          setFormData(prev => ({ 
+            ...prev, 
+            goal: `0${month}/${year}`
+          }));
+        }
+      }
+    }
+    
     onSubmit(formData);
     onClose();
   };
-
+  
+  const handleBlur = () => {
+    if (formData.goal) {
+      const parts = formData.goal.split('/');
+      if (parts.length === 2) {
+        const [month, year] = parts;
+        if (month.length === 1) {
+          setFormData(prev => ({ 
+            ...prev, 
+            goal: `0${month}/${year}`
+          }));
+        }
+      }
+    }
+  };
+  
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogContent>
-        
+       
         <TextField
           fullWidth
           label="Local"
@@ -80,8 +134,13 @@ const PlaceForm: React.FC<PlaceFormProps> = ({
           name="goal"
           value={formData.goal || ''}
           onChange={handleChange}
+          onBlur={handleBlur}
           margin="normal"
           placeholder="MM/AAAA"
+          inputProps={{
+            maxLength: 7,
+            placeholder: "MM/AAAA"
+          }}
         />
       </DialogContent>
       <DialogActions>

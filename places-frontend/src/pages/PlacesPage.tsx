@@ -214,7 +214,44 @@ const PlacesPage: React.FC = () => {
             fullWidth
             placeholder="mês/ano"
             value={goal}
-            onChange={(e) => setGoal(e.target.value)}
+            onChange={(e) => {
+              const input = e.target.value;
+              const processed = input.replace(/[^\d/]/g, '');
+              
+              if (processed.length <= 7) {
+                if (processed.length === 2 && !processed.includes('/') && input.length > e.target.value.length) {
+                  setGoal(`${processed}/`);
+                } 
+                else if ((processed.match(/\//g) || []).length <= 1) {
+                  const parts = processed.split('/');
+                  
+                  if (parts.length === 1 && parts[0].length <= 2) {
+                    setGoal(processed);
+                  } else if (parts.length === 2) {
+                    const [month, year] = parts;
+                    
+                    if (month.length <= 2 && (month === '' || (parseInt(month) >= 1 && parseInt(month) <= 12) || month.length < 2)) {
+                      if (year.length <= 4) {
+                        setGoal(processed);
+                      }
+                    }
+                  }
+                }
+              }
+            }}
+            inputProps={{
+              maxLength: 7,
+              placeholder: "MM/AAAA"
+            }}
+            onBlur={() => {
+              const parts = goal.split('/');
+              if (parts.length === 2) {
+                const [month, year] = parts;
+                if (month.length === 1) {
+                  setGoal(`0${month}/${year}`);
+                }
+              }
+            }}
             sx={{ 
               backgroundColor: 'white', 
               borderRadius: 1,
